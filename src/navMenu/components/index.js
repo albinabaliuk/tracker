@@ -13,6 +13,7 @@ const Main = styled.div`
 `
 
 const Item = styled.div`
+  
   display: grid;
   grid-template-columns: 20px auto;
   grid-column-gap: 10px;
