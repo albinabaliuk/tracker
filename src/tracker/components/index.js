@@ -13,8 +13,16 @@ const Main = styled.div`
   background-color: #f2f6f8;
 `
 
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+`
+
 const AddNewProject = styled.div`
-  position: relative;
   width: 90%;
   height: 80px;
   border: #b8b8b8 solid .7px;
@@ -56,14 +64,15 @@ const EmptyTitle = styled.div`
 `
 
 const TimingBar = styled.div`
-  position: absolute;
-  margin-top: 120px;
-  width: 100%;
+  width: 90%;
   height: 40px;
   border: #b8b8b8 solid .7px;
   border-radius: 5px;
   background-color: white;
   align-items: center;
+  display: grid;
+  grid-template-columns: 80% 20%;
+  grid-column-gap: 10%;
 `
 
 const StartButton = styled.button`
@@ -72,18 +81,27 @@ const StartButton = styled.button`
 const Tracker = () => {
   const [activities, updateActivities] = useState([])
 
+
   //TODO don't add any activity if input is empty
   //TODO clear input after adding an activity
   //TODO focus on input after adding an activity
+
   const addActivity = (e) => {
     if (e.key === 'Enter' || e.keyCode === 13) {
       const activityTitle = e.target.value
+
+      if (!activityTitle) {
+        alert("Please enter an activity");
+        return false;
+      }
 
       const newActivity = {
         title: activityTitle
       }
 
       updateActivities([ ...activities, newActivity ])
+
+      e.target.value = ''
     }
   }
 
@@ -91,6 +109,8 @@ const Tracker = () => {
 
   return (
     <Main>
+
+      <Wrapper>
       <AddNewProject>
         <InputArea
           onKeyUp={addActivity}
@@ -104,6 +124,7 @@ const Tracker = () => {
        </Item>
       </AddNewProject>
 
+      <TimingBar>
       {
         isActivitiesEmpty
           ? (
@@ -123,6 +144,8 @@ const Tracker = () => {
             ))
           )
       }
+      </TimingBar>
+      </Wrapper>
     </Main>
   )
 }
