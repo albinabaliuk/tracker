@@ -34,7 +34,7 @@ const AddNewProject = styled.div`
 
   display: grid;
   grid-template-columns: 80% 20%;
-  grid-column-gap: 10%;
+  grid-column-gap: 4%;
 `
 
 const InputArea = styled.input`
@@ -76,32 +76,52 @@ const TimingBar = styled.div`
 `
 
 const StartButton = styled.button`
+  background-color: deepskyblue;
+  border: gray 1px solid;
+  width: 50%;
+  height: 30px;
+  border-radius: 5px;
+  color: white;
+  margin-left: 20px;
+  cursor: pointer;
+  outline: none;
+  transition: all .3s ease;
+
+  &:hover {
+    background-color: #70a0b1;
+  }
 `
 
 const Tracker = () => {
   const [activities, updateActivities] = useState([])
+  const [inputValue, updateInputValue] = useState('')
 
 
-  //TODO don't add any activity if input is empty
-  //TODO clear input after adding an activity
-  //TODO focus on input after adding an activity
+  const onInputChange = (e) => {
+    updateInputValue(e.target.value)
+  }
 
-  const addActivity = (e) => {
+  const addActivity = () => {
+    if (!inputValue) {
+      alert("Please enter an activity");
+      return false;
+    }
+
+    const newActivity = {
+      title: inputValue,
+      startDate: null,
+      endDate: null,
+      isActive: false
+    }
+
+    updateActivities([ ...activities, newActivity ])
+
+    updateInputValue('')
+  }
+
+  const onKeyUp = (e) => {
     if (e.key === 'Enter' || e.keyCode === 13) {
-      const activityTitle = e.target.value
-
-      if (!activityTitle) {
-        alert("Please enter an activity");
-        return false;
-      }
-
-      const newActivity = {
-        title: activityTitle
-      }
-
-      updateActivities([ ...activities, newActivity ])
-
-      e.target.value = ''
+      addActivity()
     }
   }
 
@@ -113,18 +133,18 @@ const Tracker = () => {
       <Wrapper>
       <AddNewProject>
         <InputArea
-          onKeyUp={addActivity}
+          onKeyUp={onKeyUp}
+          value={inputValue}
+          onChange={onInputChange}
         />
+        <StartButton
+          onClick={addActivity}
+        >
+          Start
+        </StartButton>
 
-       <Item>
-         Project
-        <Icon>
-          <AddProjectIcon />
-        </Icon>
-       </Item>
       </AddNewProject>
 
-      <TimingBar>
       {
         isActivitiesEmpty
           ? (
@@ -133,18 +153,15 @@ const Tracker = () => {
             </EmptyTitle>
           )
           : (
-            activities.map(activity => (
-              <div>
-                {activity.title}
-
-                <StartButton>
-                  Start
-                </StartButton>
-              </div>
+            activities.map((activity, index) => (
+              <TimingBar key={index}>
+                <div>
+                  {activity.title}
+                </div>
+              </TimingBar>
             ))
           )
       }
-      </TimingBar>
       </Wrapper>
     </Main>
   )
