@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-
-import { ReactComponent as AddProjectIcon } from '../../shared/assets/icons/plus-blue.svg'
+import Button from '../../shared/components/Button'
+import ItemControls from './ItemControls'
+import DateRange from './DateRange'
 
 const Main = styled.div`
   display: flex;
@@ -18,7 +19,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  justify-content: center;
   align-items: center;
 `
 
@@ -26,15 +26,15 @@ const AddNewProject = styled.div`
   width: 90%;
   height: 80px;
   border: #b8b8b8 solid .7px;
-  margin-top: -300px;
+  margin-top: 200px;
   border-radius: 5px;
   background-color: white;
   align-items: center;
   padding: 0px 30px;
 
   display: grid;
-  grid-template-columns: 80% 20%;
-  grid-column-gap: 4%;
+  grid-template-columns: auto 80px;
+  grid-column-gap: 20px;
 `
 
 const InputArea = styled.input`
@@ -46,13 +46,8 @@ const InputArea = styled.input`
   padding: 0px 20px;
 `
 
-const Item = styled.div`
-  display: grid;
-  grid-template-columns: 30% auto;
-  cursor: pointer;
-  grid-column-gap: 5%;
-
-  color: #6abae5;
+const ItemTitle = styled.div`
+  
 `
 
 const Icon = styled.div`
@@ -71,31 +66,36 @@ const TimingBar = styled.div`
   background-color: white;
   align-items: center;
   display: grid;
-  grid-template-columns: 80% 20%;
-  grid-column-gap: 10%;
-`
-
-const StartButton = styled.button`
-  background-color: deepskyblue;
-  border: gray 1px solid;
-  width: 50%;
-  height: 30px;
-  border-radius: 5px;
-  color: white;
-  margin-left: 20px;
-  cursor: pointer;
-  outline: none;
-  transition: all .3s ease;
-
-  &:hover {
-    background-color: #70a0b1;
-  }
+  grid-template-columns: auto auto 80px;
+  grid-column-gap: 10px;
+  padding: 0 30px;
 `
 
 const Tracker = () => {
   const [activities, updateActivities] = useState([])
   const [inputValue, updateInputValue] = useState('')
 
+
+  const onStart = (index) => () => {
+    const newActivities = [...activities]
+
+    newActivities[index].isActive = true
+
+    if(!newActivities[index].startDate) {
+      newActivities[index].startDate = Date.now()
+    }
+
+    updateActivities(newActivities)
+  }
+
+  const onStop = (index) => () => {
+    const newActivities = [...activities]
+
+    newActivities[index].isActive = false
+    newActivities[index].endDate = Date.now()
+
+    updateActivities(newActivities)
+  }
 
   const onInputChange = (e) => {
     updateInputValue(e.target.value)
@@ -137,11 +137,12 @@ const Tracker = () => {
           value={inputValue}
           onChange={onInputChange}
         />
-        <StartButton
+        <Button
           onClick={addActivity}
+          customColor='#000000'
         >
-          Start
-        </StartButton>
+          Add
+        </Button>
 
       </AddNewProject>
 
@@ -155,9 +156,18 @@ const Tracker = () => {
           : (
             activities.map((activity, index) => (
               <TimingBar key={index}>
-                <div>
+                <ItemTitle>
                   {activity.title}
-                </div>
+                </ItemTitle>
+
+                <DateRange activity={activity}/>
+
+                <ItemControls
+                  activity={activity}
+                  onStart={onStart(index)}
+                  onStop={onStop(index)}
+                />
+
               </TimingBar>
             ))
           )
