@@ -12,31 +12,53 @@ class Timer extends Component {
   }
 
   incrementTiming = () => {
-    console.log(this.state.timing + 1)
     this.setState({
       ...this.state,
       timing: this.state.timing + 1
     })
   }
 
+  formatDigit = (digit) => {
+    return digit < 10 ? `0${digit}` : digit
+  }
+
+  formatTiming = () => {
+    let timing = this.state.timing
+
+    const hours = Math.floor(timing / 3600)
+
+    if(hours > 0) {
+      timing -= hours * 3600
+    }
+
+    const minutes = Math.floor(timing / 60)
+
+    if(minutes > 0) {
+      timing -= minutes * 60
+    }
+
+    const seconds = timing
+
+    return `${this.formatDigit(hours)}:${this.formatDigit(minutes)}:${this.formatDigit(seconds)}`
+  }
+
   render = () => {
     const {
       isActive
     } = this.props
-    console.log(isActive)
-    // setTimeout(this.incrementTiming, 1000)
-    // if(isActive) {
-    //   this.timeout = setTimeout(this.incrementTiming, 1000)
-    // }
-    //
-    // if(!isActive && this.timeout) {
-    //   clearTimeout(this.timeout)
-    //   this.timeout = null
-    // }
+
+    if(isActive && !this.interval) {
+      this.interval = setInterval(this.incrementTiming, 1000)
+    }
+
+    if(!isActive && this.interval) {
+      clearInterval(this.interval)
+      this.interval = null
+    }
 
     return (
       <Wrapper>
-        {this.state.timing}
+        {this.formatTiming()}
       </Wrapper>
     )
   }
