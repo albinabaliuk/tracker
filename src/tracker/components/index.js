@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Button from '../../shared/components/Button'
 import ItemControls from './ItemControls'
 import DateRange from './DateRange'
+import Timer from './Timer'
 
 const Main = styled.div`
   display: flex;
@@ -66,7 +67,7 @@ const TimingBar = styled.div`
   background-color: white;
   align-items: center;
   display: grid;
-  grid-template-columns: auto auto 80px;
+  grid-template-columns: auto auto auto 80px;
   grid-column-gap: 10px;
   padding: 0 30px;
 `
@@ -161,6 +162,8 @@ const Tracker = () => {
                 </ItemTitle>
 
                 <DateRange activity={activity}/>
+
+                <Timer isActive={activity.isActive}/>
 
                 <ItemControls
                   activity={activity}
