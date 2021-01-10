@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import Button from '../../shared/components/Button'
-import ItemControls from './ItemControls'
+import ItemControls from '../containers/ItemControls'
 import DateRange from './DateRange'
 import Timer from './Timer'
 
@@ -48,7 +48,9 @@ const InputArea = styled.input`
 `
 
 const ItemTitle = styled.div`
-  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 const Icon = styled.div`
@@ -67,56 +69,27 @@ const TimingBar = styled.div`
   background-color: white;
   align-items: center;
   display: grid;
-  grid-template-columns: auto auto auto 80px;
+  grid-template-columns: 300px auto auto 80px;
   grid-column-gap: 10px;
   padding: 0 30px;
+  margin-top: 10px;
+  justify-self: center;
 `
 
-const Tracker = () => {
-  const [activities, updateActivities] = useState([])
+const Tracker = props => {
   const [inputValue, updateInputValue] = useState('')
-
-
-  const onStart = (index) => () => {
-    const newActivities = [...activities]
-
-    newActivities[index].isActive = true
-
-    if(!newActivities[index].startDate) {
-      newActivities[index].startDate = Date.now()
-    }
-
-    updateActivities(newActivities)
-  }
-
-  const onStop = (index) => () => {
-    const newActivities = [...activities]
-
-    newActivities[index].isActive = false
-    newActivities[index].endDate = Date.now()
-
-    updateActivities(newActivities)
-  }
 
   const onInputChange = (e) => {
     updateInputValue(e.target.value)
   }
 
   const addActivity = () => {
-    if (!inputValue) {
-      alert("Please enter an activity");
-      return false;
+    if(!inputValue) {
+      alert('Enter some activity!')
+      return
     }
 
-    const newActivity = {
-      title: inputValue,
-      startDate: null,
-      endDate: null,
-      isActive: false
-    }
-
-    updateActivities([ ...activities, newActivity ])
-
+    props.addActivity(inputValue)
     updateInputValue('')
   }
 
@@ -126,7 +99,11 @@ const Tracker = () => {
     }
   }
 
-  const isActivitiesEmpty = activities.length === 0
+  const onAddClick = () => {
+    addActivity()
+  }
+
+  const isActivitiesEmpty = props.activities.length === 0
 
   return (
     <Main>
@@ -139,7 +116,7 @@ const Tracker = () => {
           onChange={onInputChange}
         />
         <Button
-          onClick={addActivity}
+          onClick={onAddClick}
           customColor='#000000'
         >
           Add
@@ -155,7 +132,7 @@ const Tracker = () => {
             </EmptyTitle>
           )
           : (
-            activities.map((activity, index) => (
+            props.activities.map((activity, index) => (
               <TimingBar key={index}>
                 <ItemTitle>
                   {activity.title}
@@ -166,9 +143,8 @@ const Tracker = () => {
                 <Timer isActive={activity.isActive}/>
 
                 <ItemControls
-                  activity={activity}
-                  onStart={onStart(index)}
-                  onStop={onStop(index)}
+                  isActivityActive={activity.isActive}
+                  index={index}
                 />
 
               </TimingBar>

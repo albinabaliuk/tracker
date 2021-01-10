@@ -1,6 +1,8 @@
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import store from './state/store'
 import Dashboard from './dashboard/components'
-import Tracker from './tracker/components'
+import Tracker from './tracker/containers'
 import NavMenu from './navMenu/components'
 import Reports from './reports/components'
 import styled from 'styled-components'
@@ -19,25 +21,27 @@ const Application = styled.div`
 
 const App = () => {
   return (
-    <Wrapper>
-      <BrowserRouter>
-        <Application>
-          <NavMenu/>
+    <Provider store={store} >
+      <Wrapper>
+        <BrowserRouter>
+          <Application>
+            <NavMenu/>
 
-          <Switch>
-            <Route path='/tracker'>
-              <Tracker/>
-            </Route>
-            <Route path='/dashboard'>
-              <Dashboard/>
-            </Route>
-            <Route path='/reports'>
-              <Reports />
-            </Route>
-          </Switch>
-        </Application>
-      </BrowserRouter>
-    </Wrapper>
+            <Switch>
+              <Route path='/tracker'>
+                <Tracker/>
+              </Route>
+              <Route path='/dashboard'>
+                <Dashboard/>
+              </Route>
+              <Route path='/reports'>
+                <Reports />
+              </Route>
+            </Switch>
+          </Application>
+        </BrowserRouter>
+      </Wrapper>
+    </Provider>
   )
 }
 

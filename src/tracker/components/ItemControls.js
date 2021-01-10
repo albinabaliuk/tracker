@@ -3,23 +3,24 @@ import Button from '../../shared/components/Button'
 
 const ItemControls = (props) => {
   const {
-    activity,
-    onStop,
-    onStart
+    isActivityActive,
+    index,
+    endActivity,
+    startActivity
   } = props
 
-  return activity.isActive
+  return isActivityActive
     ? (
       <Button
         customColor='#f44336'
-        onClick={onStop}
+        onClick={endActivity(index)}
       >
         Stop
       </Button>
     )
     : (
       <Button
-        onClick={onStart}
+        onClick={startActivity(index)}
       >
         Start
       </Button>
