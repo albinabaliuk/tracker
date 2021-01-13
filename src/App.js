@@ -1,7 +1,7 @@
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import store from './state/store'
-import Dashboard from './dashboard/components'
+import Dashboard from './dashboard/containers'
 import Tracker from './tracker/containers'
 import NavMenu from './navMenu/components'
 import Reports from './reports/components'
